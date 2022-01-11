@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>用户表</title>
+    <link rel="stylesheet" href="layui/css/layui.css">
+</head>
+
+<body>
+<!-- 内容主体区域 -->
+
+<div style="margin-left: 10px;margin-right: 10px;margin-top: 15px;border: 5px solid rgba(55,55,9,0.57);border-radius: 10px;height: 50px;background-color:#202020">
+    <label style="margin-left: 5px;margin-top: 20px;color: white">搜索条件：</label>
+    <div class="layui-inline">
+        <input class="layui-input" id="uId" placeholder="教师id" style="margin-left: 15px;margin-top:5px;width: 150px;border: 2px solid white;border-radius: 5px" autocomplete="off">
+    </div>
+    <div class="layui-inline">
+        <input class="layui-input" id="uName" placeholder="教师名" style="margin-left: 30px;margin-top:5px;width: 150px;border: 2px solid white;border-radius: 5px" autocomplete="off">
+    </div>
+<!--    <div class="layui-inline">-->
+<!--        <input class="layui-input" id="u_City" placeholder="城市" style="margin-left: 30px;margin-top:5px;width: 150px;border: 2px solid white;border-radius: 5px" autocomplete="off">-->
+<!--    </div>-->
+<!--    <div class="layui-inline">-->
+<!--        <input type="text" id="start" autocomplete="off" class="layui-input" style="margin-left: 30px;margin-top:5px;width: 150px;border: 2px solid white;border-radius: 5px" placeholder="开始时间">-->
+<!--    </div>-->
+<!--    <label style="color: yellow">&#45;&#45;&#45;&#45;</label>-->
+<!--    <div class="layui-inline">-->
+<!--        <input type="text" id="end" autocomplete="off" class="layui-input" style="width: 150px;margin-top:5px;border: 2px solid white;border-radius: 5px" placeholder="结束时间">-->
+<!--    </div>-->
+    <button type="button" id="qingKong" class="layui-btn layui-btn-sm layui-btn-danger" style="margin-left: 30px;margin-top:5px" ><i class="layui-icon">&#xe669;</i>清空</button>
+    <button id="u_tb" type="button" class="layui-btn layui-btn-sm" data-type="reload" style="margin-left: 30px;margin-top:5px"><i class="layui-icon">&#xe615;</i>搜索</button>
+</div>
+
+<table id="tb-user" lay-filter="tb-user"></table>
+
+
+<!--编辑表单-->
+    <div class="layui-row" id="editUser" style="display:none;">
+        <div class="layui-col-md10">
+            <form class="layui-form layui-from-pane" id="saveUser" style="margin-top:30px">
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">教师姓名</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="name" id="name" required lay-verify="required" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+
+                <input type="hidden" name="id" id="id">
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">教师电话</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="city" id="city" required lay-verify="required" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">出生日期</label>
+                    <div class="layui-input-block">
+                        <input type="text" name="birthday" id="birthday" required lay-verify="required" autocomplete="off"
+                               class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item" style="margin-top:40px" id="check">
+                    <div class="layui-input-block">
+                        <button class="layui-btn  layui-btn-submit " lay-submit="" lay-filter="saveUser">保存</button>
+                        <button type="reset" class="layui-btn layui-btn-danger">重置</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+<!--
+新增，删除
+-->
+    <script type="text/html" id="toolbarDemo">
+
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm" lay-event="add"><i class="layui-icon">&#xe608;</i>新增</button>
+            <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="remove"><i class="layui-icon">&#xe640;</i>删除</button>
+        </div>
+
+    </script>
+
+    <script type="text/html" id="barDemo">
+        <a class="layui-btn layui-btn-sm" lay-event="edit"><i class="layui-icon">&#xe642;</i>编辑 </a>
+    </script>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+    </div>
+<script src="layui/jquery.min.js"></script>
+<script src="layui/layui.all.js"></script>
+<script src="layui/layui_exts/excel.js"></script>
+<script>
+        // 使用模块
+        layui.use(['element', 'layer', 'laydate', 'table', 'form'], function () {
+            var layer = layui.layer,//弹层
+                laydate = layui.laydate,//日期
+                table = layui.table,//表格
+                form = layui.form;//表单
+            //slider = layui.slider //滑块
+            laydate.render({
+                elem: "#birthday",
+                type: "date",
+                format: "yyyy-MM-dd",
+                value: ''
+            });
+
+            laydate.render({
+                elem: "#start",
+                type: "date",
+                format: "yyyy-MM-dd",
+                value: ''
+            });
+            laydate.render({
+                elem: "#end",
+                type: "date",
+                format: "yyyy-MM-dd",
+                value: ''
+            });
+            //第一个实例
+
+         var userTable = table.render({
+
+                elem: '#tb-user'
+                ,title: '用户信息表'
+                , height: 515
+                , type: 'post'
+                , url: '/user/list' //数据接口
+             // page: true 开启分页
+               ,page: {
+                    limits: [5,10,20,10000]
+             }
+               , toolbar: '#toolbarDemo'
+            /* , parseData: function (res) {
+                   console.log('请求的数据',res.data)
+                   //exportData = res.data
+                   return {
+                    "code": res.code, //解析接口状态
+                    "msg": res.msg, //解析提示文本
+                    "data": res.data //解析数据列表
+                }
+            }*/
+             /*
+            defaultToolbar: ['filter', 'exports', 'print', { //自定义头部工具栏右侧图标。如无需自定义，去除该参数即可
+            title: '提示'
+            ,layEvent: 'LAYTABLE_TIPS'
+            ,icon: 'layui-icon-tips'
+            }], response: {
+                statusName: 'code', //规定返回的状态码字段为code
+                statusCode: 200 //规定成功的状态码味200
+            }*/
+
+                , cols: [[ //表头
+                    {type: 'checkbox', fixed: 'left'}
+                    , {field: 'id', title: 'ID', width: 80, sort: true, fixed: 'left'}
+                    , {field: 'name', title: '用户名'}
+                    , {field: 'city', title: '电话'}
+                    , {field: 'birthday', title: '出生日期', sort: true}
+                    , {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 80}
+                ]],
+            });
+            //重载
+            var $ = layui.$, active = {
+                reload: function () {
+                    var uId = $('#uId');
+                    var u_City = $('#u_City');
+                    var start = $('#start');
+                    var end = $("#end");
+                    var name = $('#uName');
+                    //执行重载
+                    userTable.reload({
+                        url: '/user/queryByParam',
+                        where: {
+                                city: u_City.val(),//城市名
+                                id: uId.val(),//用户id
+                                start: start.val(),//日期查询开始时间
+                                end: end.val(),//日期查询结束时间
+                                name: name.val()//用户名
+                        },
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                    }, 'data');
+                }
+            };
+
+            $('#u_tb').on('click', function () {
+                var type = $(this).data('type');
+                active[type] ? active[type].call(this) : '';
+            });
+
+           $('#qingKong').on('click',function () {
+              $('#uId').val('');
+              $('#u_City').val('');
+              $('#start').val('');
+              $("#end").val('');
+              $('#uName').val('')
+
+           });
+            //监听表单提交
+            // 修改
+            form.on('submit(saveUser)', function (data) {
+                layer.alert(JSON.stringify(data.field));
+                $.ajax({
+                    url: '/user/save',
+                    type: 'POST',
+                    contentType: "application/json",
+                    dataType: "json",
+                    data: JSON.stringify(data.field),
+                    success: function (result) {
+                        if (result.code == 200) {
+                            layer.msg("操作成功！", {icon: 6});
+                            setTimeout(function () {
+                                layer.closeAll();//关闭所有的弹出层
+                              userTable.reload();
+                            }, 300);
+                        } else {
+                            layer.msg("操作失败！", {icon: 5});
+                        }
+                    }
+                });
+
+                return false;
+
+            });
+
+            //工具栏事件
+            table.on('toolbar(tb-user)', function (obj) {
+                var checkStatus = table.checkStatus(obj.config.id);
+                var checkData = checkStatus.data;
+                var ids = [];
+                switch (obj.event) {
+                    // 新增
+                    case 'add':
+                        $("#name").val('');
+                        $("#city").val('');
+                        $("#id").val('');
+                        $("#birthday").val('');
+
+                        layer.open({
+                            type: 1,
+                            offset: '10px',
+                            title: "新增用户",
+                            area: ['500px', '400px'],
+                            content: $("#editUser")
+                        });
+
+
+                        break;
+                    // 删除
+                    case 'remove':
+                        if (checkData.length == 0) {
+                            layer.alert('请选择要操作的行');
+                        } else {
+                            layer.confirm('确定要删除吗？', function (index) {
+                                for (var i = 0; i < checkData.length; i++) {
+                                    ids.push(checkData[i].id);
+                                }
+                                layer.alert(JSON.stringify(ids));
+                                $.ajax({
+                                    url: '/user/remove',
+                                    type: 'POST',
+                                    contentType: "application/json",
+                                    dataType: "json",
+                                    data: JSON.stringify(ids),
+                                    success: function (result) {
+                                        if (result.code == 200) {
+                                            setTimeout(function () {
+                                                layer.closeAll();//关闭所有的弹出层
+                                               userTable.reload();
+                                            }, 300);
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                        break;
+                }
+                ;
+            });
+
+            // 监听工具条
+            table.on('tool(tb-user)', function (obj) {
+                var data = obj.data;
+                // 修改
+                if (obj.event === 'edit') {
+                    $("#name").val(data.name);
+                    $("#city").val(data.city);
+                    $("#id").val(data.id);
+                    $("#birthday").val(data.birthday);
+
+                    layer.open({
+                        type: 1,
+                        offset: '10px',
+                        title: "修改用户",
+                        area: ['500px', '400px'],
+                        content: $("#editUser")
+                    });
+                }
+            });
+        });
+
+</script>
+
+</body>
+
+</html>

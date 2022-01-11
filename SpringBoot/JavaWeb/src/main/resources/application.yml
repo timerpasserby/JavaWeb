@@ -1,0 +1,29 @@
+#服务器的配置
+server:
+  port: 9090
+  servlet:
+    session:
+      timeout: 20m
+
+spring:
+  #配置数据库
+  datasource:
+    url: jdbc:mysql://localhost:3306/education
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: sa
+    password: 123456
+#  静态资源添加访问前缀
+#  mvc:
+#    static-path-pattern: /static/**
+
+#  指定目录 ,有了默认陌路就无须配置
+#  web:
+#    resources:
+#      static-locations: classpath:/templates
+
+
+# 配置mybatis
+mybatis:
+    mapper-locations: classpath:mapping/*Mapper,xml
+    type-aliases-package: com.javaweb.domain
+

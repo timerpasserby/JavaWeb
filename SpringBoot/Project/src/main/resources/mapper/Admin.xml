@@ -1,0 +1,20 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.springboot.dao.AdminDao">
+    <!--
+    查询管理员用户
+    -->
+    <select id="findAdmin" parameterType="Admin" resultType="Admin">
+        select * from admin
+        where name = #{name} and password = #{password}
+    </select>
+ <!--
+ 修改密码
+ 成功返回1，失败返回0
+ -->
+    <update id="changePwd" parameterType="Admin" >
+        update admin set password = #{password}
+        where name = #{name}
+    </update>
+</mapper>

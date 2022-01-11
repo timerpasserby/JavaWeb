@@ -1,0 +1,94 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.springboot.dao.LayuiUserDao">
+   <!--
+   查询所有用户数
+   -->
+    <select id="findAllUsers"  resultType="int">
+        select count(1) from layui_user
+    </select>
+    <!--
+   查询所有用户集合
+   -->
+    <select id="findAllUsersList"  resultType="LayuiUser">
+        select * from layui_user
+    </select>
+    <!--
+    分页获取用户
+    注意：limit后的语句不允许进行算术运算
+    （#{page}-1)*{size},#{size}是错误的
+     -->
+    <select id="getPage" resultType="LayuiUser">
+      select * from layui_user
+      order by id asc
+      limit ${(start-1)*size},${size};
+    </select>
+
+    <!--按条件查询-->
+    <select id="queryByParam" resultType="LayuiUser">
+        select * from layui_user
+        <where>
+        <if test="city!=null and city!=''">
+            city = #{city}
+        </if>
+        <if test="id!=0">
+            and id = #{id}
+        </if>
+        <if test="name!=null and name!=''">
+            and name = #{name}
+        </if>
+        <if test="start!=null and start!=''and end!=null and end!=''">
+            and birthday between #{start} and #{end}
+        </if>
+       </where>
+    </select>
+    <!--按条件查询并分页-->
+    <select id="queryByParamPage" resultType="LayuiUser">
+        select * from layui_user
+        <where>
+            <if test="city!=null and city!=''">
+                city = #{city}
+            </if>
+            <if test="id!=0">
+                and id = #{id}
+            </if>
+            <if test="name!=null and name!=''">
+                and name = #{name}
+            </if>
+            <if test="start!=null and start!=''and end!=null and end!=''">
+                and birthday between #{start} and #{end}
+            </if>
+        </where>
+        order by id asc
+        limit ${(page-1)*limit},${limit};
+    </select>
+
+
+
+    <!--
+    删除一个用户
+    -->
+   <delete id="delUser" parameterType="int" >
+       delete from layui_user where id = #{id}
+   </delete>
+    <!--
+    批量删除用户
+    -->
+    <delete id="delUsers" parameterType="int" >
+       delete from layui_user where id = #{id}
+   </delete>
+    <!--
+    修改用户信息
+    -->
+    <update id="updateUser" parameterType="LayuiUser">
+        update layui_user set id = #{id},name = #{name},city = #{city},birthday = #{birthday}
+        where id = #{id}
+    </update>
+    <!--
+    增加用户
+    -->
+    <insert id="addUser" parameterType="LayuiUser">
+        insert into layui_user values(#{id},#{name},#{city},#{birthday})
+    </insert>
+</mapper>

@@ -1,0 +1,118 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>修改密码页</title>
+    <link rel="stylesheet" href="layui/css/layui.css" media="all">
+
+    <script src="layui/layui.js"></script>
+    <style>
+      body{
+          display: -ms-flexbox;
+          display: flex;
+          -ms-flex-align: center;
+          align-items: center;
+          padding-top: 40px;
+          padding-bottom: 40px;
+          background-repeat:no-repeat;
+          background-size:100% 100%;
+          background-attachment: fixed;
+          background-image: url("img/modpwd.jpg");
+
+      }
+    .layui-card-body{
+        width: 200px;
+        height: 220px;
+        background-color:#2F4056;
+        border-radius: 5px;
+        position: absolute;
+        top: 50%;
+        margin-left: 600px;
+        margin-top: -120px;
+    }
+        .layui-btn-container{
+            margin-left:30px;
+        }
+    </style>
+
+</head>
+<body>
+
+
+        <div class="layui-card-body" pad15="">
+
+            <form class="layui-form" action="">
+                <div class="layui-nav-item" style="background-color: black;text-align: center;color: white;height: 40px;line-height: 40px">
+                    <i class="layui-icon" style="color: yellow">&#xe642;</i>
+                    ***密码重置
+                </div>
+                <div class="layui-form-item" style="margin-top: 20px;margin-left:8px;border-radius: 5px">
+                    <div class="layui-input-inline">
+                        <input name="password" placeholder="新密码" lay-verify="required|pass" lay-vertype="tips" id="LAY_password" class="layui-input" type="password">
+                    </div>
+                </div>
+                <div class="layui-form-item" style="margin-top: 20px;margin-left: 8px;border-radius: 5px">
+                    <div class="layui-input-inline">
+                        <input name="repassword" placeholder="确认新密码" lay-verify="required|pass2" lay-vertype="tips" class="layui-input" type="password">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-btn-container">
+                        <button class="layui-btn" lay-submit="" lay-filter="pwdup" style="border-radius: 5px;color: white;background-color: black">确认
+                        </button>
+                        <button type="reset" class="layui-btn " style="border-radius: 5px;color: white;background-color: black">重置</button>
+                    </div>
+
+                </div>
+            </form>
+
+        </div>
+<script>
+    layui.use(['form', 'layer'] ,function(){
+        var $ = layui.jquery
+            ,form = layui.form
+            ,layer = layui.layer;
+
+        form.render();
+        //自定义验证规则
+        form.verify({
+        pass: [/(.+){6,12}$/, '密码必须6到12位'],
+        pass2:function(value){
+                var passwordValue = $('input[name=password]').val();
+                if(value != passwordValue){
+                   return "两次输入密码不一致";
+                }
+            }
+        });
+
+        //监听提交
+        form.on('submit(pwdup)', function(data){
+            /* layer.alert(JSON.stringify(data.field), {
+              title: '最终的提交信息'
+            }) */
+            $.ajax({
+                url: "/changePwd",
+                type: "post",
+                async: false,
+                data: data.field,
+                dataType: "json",
+                success: function (data) {
+                    if(data.msg=="1"){
+                        layer.alert("修改成功",{icon: 1,time:2000},function () {
+                          window.location.href = "login.html";
+
+                        });
+                    } else{
+                        layer.alert("修改失败");
+                    }
+                }
+            });
+            return false;
+        });
+
+    });
+</script>
+</body>
+</html>

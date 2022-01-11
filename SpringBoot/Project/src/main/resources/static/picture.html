@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>柱状图</title>
+    <!-- 引入 echarts.js -->
+    <script src="layui/echarts.min.js"></script>
+    <script src="layui/jquery.min.js"></script>
+    <style>
+        #part1{
+            border:solid 3px #c3cab9;
+            margin-left: 100px;
+            margin-top: 20px;
+            width: 500px;
+            height: 320px;
+            float: left;
+        }
+
+        #part2{
+            border:solid 3px #c3cab9;
+            margin-top: 20px;
+            margin-left: 50px;
+            width: 500px;
+            height: 320px;
+            float: left;
+        }
+
+        #part3{
+            /* div 换行 */
+            border:solid 3px #c3cab9;
+            margin-left:100px;
+            margin-top: 20px;
+            width: 500px;
+            height: 320px;
+            float: left;
+            clear: left;
+        }
+
+        #part4{
+            border:solid 3px #c3cab9;
+            margin-top: 20px;
+            margin-left: 50px;
+            width: 500px;
+            height: 320px;
+            float: left;
+        }
+        #part5{      /* div 换行 */
+            border:solid 3px #c3cab9;
+            margin-left: 100px;
+            margin-top: 20px;
+            width: 500px;
+            height: 320px;
+            float: left;
+            clear: left;
+        }
+
+        #part6{
+            border:solid 3px #c3cab9;
+            margin-top: 20px;
+            margin-left: 50px;
+            width: 500px;
+            height: 320px;
+            float: left;
+        }
+    </style>
+</head>
+<body style="background-color:black">
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div style="margin-left: 10px;margin-top: 10px;position: relative">
+    <div id="part1" ></div>
+    <div id="part2" ></div>
+    <div id="part3" ></div>
+    <div id="part4" ></div>
+    <div id="part5" ></div>
+    <div id="part6" ></div>
+</div>
+<script type="text/javascript">
+
+    //柱状图1
+    var myChart1= echarts.init(document.getElementById('part1'));
+    //折线图1
+    var myChart2= echarts.init(document.getElementById('part2'));
+    //饼图1
+    var myChart3= echarts.init(document.getElementById('part3'));
+    //饼图2
+    var myChart4= echarts.init(document.getElementById('part4'));
+    //柱状图2
+    var myChart5= echarts.init(document.getElementById('part5'));
+    //折线图2
+    var myChart6= echarts.init(document.getElementById('part6'));
+    $.get('/test/dataTozhuAndzhe', function (data) {
+        myChart1.setOption({
+            backgroundColor: '#000000',
+            title: {
+                textStyle: {
+                    color: 'rgba(225, 225, 225, 0.8)'
+                },
+                text: '地区人数柱状图1',
+                left: 'center'
+            },
+            label: {
+                textStyle: {
+                    color: 'rgba(225, 225, 225, 0.8)'
+                }
+            },
+            tooltip: {},
+            xAxis: {
+                data: data.x,
+                axisLabel: {
+                    interval: 0,//代表显示所有x轴标签显示
+                    rotate: 45, //代表逆时针旋转45度
+                    textStyle: {
+                        color: '#fff'
+                    }
+                }
+            },
+            yAxis: {
+                data: data.y,
+                axisLabel: {
+                    textStyle: {
+                        color: '#fff'
+                    }
+                }
+            },
+            series: [{
+                name: '数量',
+                type: 'bar',
+                data: data.y
+            }]
+        });
+
+        myChart2.setOption({
+            title: {
+                textStyle: {
+                    color: 'rgba(225, 225, 225, 0.8)'
+                },
+                text: '地区人数折线图1',
+                left: 'center'
+            },
+            backgroundColor: '#000000',
+            xAxis: {
+                type: 'category',
+                data: data.x,
+                axisLabel: {
+                    interval: 0,//代表显示所有x轴标签显示
+                    rotate: 45, //代表逆时针旋转45度
+                    textStyle: {
+                        color: '#fff'
+                    }
+                }
+            },
+            yAxis: {
+                type: 'value',
+                axisLabel: {
+                    textStyle: {
+                        color: '#fff'
+                    }
+                }
+            },
+            series: [{
+                data: data.y,
+                type: 'line'
+            }]
+
+        });
+        myChart3.setOption({
+            legend: {
+                textStyle: {
+                    color: 'rgba(225, 225, 225, 0.8)'
+                },
+                orient: 'vertical',
+                left: 10,
+                data: data.x
+            }
+        });
+        myChart4.setOption({
+            legend: {
+                textStyle: {
+                    color: 'rgba(225, 225, 225, 0.8)'
+                },
+                orient: 'vertical',
+                left: 10,
+                data: data.x
+            }
+        });
+        myChart5.setOption({
+            backgroundColor: '#000000',
+            title: {
+                textStyle: {
+                    color: 'rgba(225, 225, 225, 0.8)'
+                },
+                text: '地区人数柱状图2',
+                left: 'center'
+            },
+            label: {
+                textStyle: {
+                    color: 'rgba(225, 225, 225, 0.8)'
+                }
+            },
+            tooltip: {},
+            xAxis: {
+                type: 'value',
+                axisLabel: {
+                    interval: 0,//代表显示所有x轴标签显示
+                    rotate: 45, //代表逆时针旋转45度
+                    textStyle: {
+                        color: '#fff'
+                    }
+                }
+            },
+            yAxis: {
+                data: data.x,
+                axisLabel: {
+                    textStyle: {
+                        color: '#fff'
+                    }
+                }
+            },
+            series: [{
+                name: '数量',
+                type: 'bar',
+                data: data.y
+            }]
+        });
+        myChart6.setOption({
+            title: {
+                textStyle: {
+                    color: 'rgba(225, 225, 225, 0.8)'
+                },
+                text: '地区人数折线图2',
+                left: 'center'
+            },
+            backgroundColor: '#000000',
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                data: data.x,
+                axisLabel: {
+                    interval: 0,//代表显示所有x轴标签显示
+                    rotate: 45, //代表逆时针旋转45度
+                    textStyle: {
+                        color: '#fff'
+                    }
+                }
+            },
+            yAxis: {
+                type: 'value',
+                axisLabel: {
+                    textStyle: {
+                        color: '#fff'
+                    }
+                }
+            },
+            series: [{
+                data: data.y,
+                type: 'line',
+                areaStyle: {
+                    color: '#ff4a6d'
+                }
+            }]
+
+        });
+
+    });
+    //饼图
+    // 异步加载数据
+    $.get('/test/dataTobin', function (data) {
+        //console.log(data);
+        //alert("可以看到 loading 字样。");
+        //myChart3.hideLoading();
+        myChart3.setOption({
+            backgroundColor: '#000000',
+            title: {
+                textStyle: {
+                    color: 'rgba(225, 225, 225, 0.8)'
+                },
+                text: '地区人数百分比饼图1',
+                // subtext: '纯属虚构',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b} : {c} ({d}%)'
+            },
+
+            series: [
+                {
+                    name: '用户来源',
+                    type: 'pie',    // 设置图表类型为饼图
+                    radius: '55%',  // 饼图的半径，外半径为可视区尺寸（容器高宽中较小一项）的 55% 长度。
+                    data: data.data_pie,
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+
+                }
+            ]
+        });
+
+        myChart4.setOption({
+            backgroundColor: '#000000',
+            title: {
+                textStyle: {
+                    color: 'rgba(225, 225, 225, 0.8)'
+                },
+                text: '地区人数百分比饼图2',
+                // subtext: '纯属虚构',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b}: {c} ({d}%)'
+            },
+            series: [
+                {
+                    name: '用户来源',
+                    type: 'pie',
+                    radius: ['50%', '70%'],
+                    data: data.data_pie,
+                    avoidLabelOverlap: false,
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: '30',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: {
+                        show: false
+                    }
+
+                }
+            ]
+        });
+    });
+
+    // 当我们浏览器缩放的时候，图表也等比例缩放
+   // window.addEventListener("resize", function() {
+        // 让我们的图表调用 resize这个方法
+    //     myChart1.resize();
+    //     myChart2.resize();
+    //     myChart3.resize();
+    //     myChart4.resize();
+    //     myChart5.resize();
+    //     myChart6.resize();
+    // });
+</script>
+</body>
+</html>
